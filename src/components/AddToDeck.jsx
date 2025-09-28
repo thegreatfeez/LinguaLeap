@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { IoAdd, IoDocumentText, IoCheckmark, IoReorderThree } from "react-icons/io5";
 import { useDeck } from "../context/DeckContext";
-
+import SuccessAlert from "./SuccessAlerts";
+import ErrorAlert from "./ErrorAlert";
 
 export default function CreateNewDeck() {
      const {addDeck} = useDeck()
@@ -18,6 +19,9 @@ export default function CreateNewDeck() {
         { front: "Gracias", back: "Thank you" }
     ])
 
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [showError, setShowError] = useState(false);
+
     function handleChange(e) {
     const { name, value } = e.target;
     setDeckDetails(prev => ({ ...prev, [name]: value }));
@@ -25,7 +29,7 @@ export default function CreateNewDeck() {
 
     function handleCreateDeck() {
       if (!deckDetails.deckName.trim()) {
-    alert("Deck Name is required");
+    setShowError(true);
     return;
   }
   const completeDeck = {
@@ -33,6 +37,7 @@ export default function CreateNewDeck() {
     cards: cardsList
   }
     addDeck(completeDeck);
+    setShowSuccess(true);
     console.log("Deck created:", completeDeck);
 
     setDeckDetails({ deckName: "", deckDescription: "" });
@@ -203,6 +208,18 @@ export default function CreateNewDeck() {
 
                 </div>
             </div>
+
+            <SuccessAlert 
+                message="Deck has been saved successfully!"
+                isVisible={showSuccess}
+                onClose={() => setShowSuccess(false)}
+            />
+
+            <ErrorAlert 
+                message="Deck name is required"
+                isVisible={showError}
+                onClose={() => setShowError(false)}
+            />
         </div>
     );
 }
