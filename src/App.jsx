@@ -6,10 +6,12 @@ import Stats from "./Pages/Stats"
 import Home from "./Pages/Home"
 import Login from "./Pages/Login"
 import CreateNewDeck from "./components/AddToDeck"
+import { DeckProvider } from "./context/DeckContext"
 
 
 export default function App() {
   return (
+    <DeckProvider>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
@@ -21,5 +23,6 @@ export default function App() {
          <Route path="login" element={<Login/>}/>
       </Routes>
     </BrowserRouter>
+    </DeckProvider>
   );
 }
