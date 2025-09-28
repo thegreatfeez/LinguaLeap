@@ -1,13 +1,22 @@
 import React from "react";
 import { IoAdd, IoDocumentText, IoCheckmark, IoReorderThree } from "react-icons/io5";
+import { useDeck } from "../context/DeckContext";
+
 
 export default function CreateNewDeck() {
+     const {addDeck} = useDeck()
+
     const [deckDetails, setDeckDetails] = React.useState({
     deckName: "",
     deckDescription: "",
     })
-    const [savedDeck, setSavedDeck] = React.useState(null)
+   
     const [cards, setCards] = React.useState({front:'', back: ''})
+    const [cardsList, setCardsList] = React.useState([
+        { front: "Hola", back: "Hello" },
+        { front: "Adiós", back: "Goodbye" },
+        { front: "Gracias", back: "Thank you" }
+    ])
 
     function handleChange(e) {
     const { name, value } = e.target;
@@ -19,20 +28,34 @@ export default function CreateNewDeck() {
     alert("Deck Name is required");
     return;
   }
-    setSavedDeck(deckDetails);
-    console.log("Deck created:", deckDetails);
+  const completeDeck = {
+    ...deckDetails,
+    cards: cardsList
+  }
+    addDeck(completeDeck);
+    console.log("Deck created:", completeDeck);
 
     setDeckDetails({ deckName: "", deckDescription: "" });
   }
 
+    function handleCardChange(e) {
+        const { name, value } = e.target;
+        setCards(prev => ({ ...prev, [name]: value }));
+    }
+
+    function handleAddCard() {
+        if (cards.front.trim() && cards.back.trim()) {
+            setCardsList(prev => [...prev, { front: cards.front, back: cards.back }]);
+            setCards({ front: '', back: '' });
+        }
+    }
+
     return (
         <div className="min-h-screen bg-gray-50 py-8">
             <div className="max-w-7xl mx-auto px-6">
-                <div className="flex gap-8">
-                    
+                <div className="flex gap-12">
                     
                     <div className="flex-1">
-                        
                         
                         <div className="flex items-center justify-between mb-8">
                             <h1 className="text-3xl font-bold text-gray-900">
@@ -40,78 +63,104 @@ export default function CreateNewDeck() {
                             </h1>
                             <button 
                             onClick={handleCreateDeck}
-                            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors flex items-center space-x-2">
-                                <IoAdd />
-                                <span>Create Deck</span>
+                            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition-colors flex items-center space-x-2">
+                                <IoDocumentText />
+                                <span>Save Deck</span>
                             </button>
                         </div>
 
                         
-                        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
-                            <div className="space-y-6">
-                                
-                                
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Deck Name
-                                    </label>
-                                    <input
-                                        name="deckName"
-                                        onChange={handleChange}
-                                        value={deckDetails.deckName}
-                                        type="text"
-                                        required
-                                        placeholder="e.g., Spanish Vocabulary: Level 1"
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    />
-                                </div>
+                        <div className="space-y-6 mb-8">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Deck Name
+                                </label>
+                                <input
+                                    name="deckName"
+                                    onChange={handleChange}
+                                    value={deckDetails.deckName}
+                                    type="text"
+                                    required
+                                    placeholder="e.g., Spanish Vocabulary: Level 1"
+                                    className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-100"
+                                />
+                            </div>
 
-                                
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Description
-                                    </label>
-                                    <textarea
-                                        name="deckDescription"
-                                        onChange={handleChange}
-                                        value={deckDetails.deckDescription}
-                                        rows="4"
-                                        placeholder="Optional: Describe the contents of this deck"
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    />
-                                </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Description
+                                </label>
+                                <textarea
+                                    name="deckDescription"
+                                    onChange={handleChange}
+                                    value={deckDetails.deckDescription}
+                                    rows="4"
+                                    placeholder="Optional: Describe the contents of this deck"
+                                    className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-100"
+                                />
                             </div>
                         </div>
 
                         
-                        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                            
-                            
-                            <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-xl font-semibold text-gray-900">
-                                    Cards
-                                </h2>
-                                <button className="bg-blue-100 hover:bg-blue-200 text-blue-700 font-medium px-4 py-2 rounded-lg transition-colors flex items-center space-x-2">
-                                    <IoDocumentText />
-                                    <span>Add New Card</span>
-                                </button>
+                        <div className="mb-8">
+                            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                                Add Cards
+                            </h2>
+                            <div className="grid grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Front
+                                    </label>
+                                    <input
+                                        name="front"
+                                        value={cards.front}
+                                        onChange={handleCardChange}
+                                        type="text"
+                                        placeholder="Term (e.g., Hola)"
+                                        className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-100"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Back
+                                    </label>
+                                    <input
+                                        name="back"
+                                        value={cards.back}
+                                        onChange={handleCardChange}
+                                        type="text"
+                                        placeholder="Definition (e.g., Hello)"
+                                        className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-100"
+                                    />
+                                </div>
                             </div>
+                            <button 
+                                onClick={handleAddCard}
+                                className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg transition-colors flex items-center space-x-2">
+                                <IoAdd />
+                                <span>Add Card</span>
+                            </button>
+                        </div>
 
-                            
-                            <div className="space-y-4">
-                                
-                                
-                                <div className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                                    <div className="flex items-start space-x-4">
-                                        <div className="text-gray-400 mt-1">
-                                            <IoReorderThree />
-                                        </div>
-                                        <div className="flex-1">
-                                            <div className="font-medium text-gray-900 mb-1">Hola</div>
-                                            <div className="text-gray-500 text-sm">Hello</div>
+                        
+                        <div className="mb-8">
+                            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                                Cards in Deck ({cardsList.length})
+                            </h2>
+                            <div className="space-y-3">
+                                {cardsList.map((card, index) => (
+                                    <div key={index} className="border border-gray-200 rounded-lg p-4 bg-white">
+                                        <div className="flex items-start space-x-4">
+                                            <div className="text-gray-400 mt-1">
+                                                <IoReorderThree />
+                                            </div>
+                                            <div className="flex-1">
+                                                <div className="font-medium text-gray-900 mb-1">{card.front}</div>
+                                                <div className="text-gray-500 text-sm">{card.back}</div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                ))}
                             </div>
                         </div>
 
