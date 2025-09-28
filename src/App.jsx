@@ -5,6 +5,8 @@ import Decks from "./Pages/Decks"
 import Stats from "./Pages/Stats"
 import Home from "./Pages/Home"
 import Login from "./Pages/Login"
+import CreateNewDeck from "./components/AddToDeck"
+
 
 export default function App() {
   return (
@@ -14,6 +16,7 @@ export default function App() {
          <Route index element={<Home />} />
           <Route path="decks" element={<Decks />} />
           <Route path="stats" element={<Stats />} />
+           <Route path="createDeck" element={<CreateNewDeck />} />
         </Route>
          <Route path="login" element={<Login/>}/>
       </Routes>
