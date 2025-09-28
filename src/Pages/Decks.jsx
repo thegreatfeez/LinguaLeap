@@ -4,7 +4,9 @@ import { useDeck } from "../context/DeckContext";
 import { FaTrash } from "react-icons/fa";
 
 export default function Decks() {
-  const { savedDecks, getDeck } = useDeck();
+  const { savedDecks, deleteDeck } = useDeck();
+ 
+ 
 
   function getCountryImage(deckName, deckId) {
     const countryMap = {
@@ -28,7 +30,6 @@ export default function Decks() {
     return `https://picsum.photos/400/200?random=${seed}`;
   }
 
-  console.log("Deck context:", savedDecks);
 
   if (!savedDecks) {
     return <div>Loading...</div>;
@@ -65,7 +66,9 @@ export default function Decks() {
                   }}
                 ></div>
                 <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <FaTrash className="w-5 h-5 text-red-500 cursor-pointer" />
+                  <FaTrash 
+                  onClick={() => deleteDeck(deck.id)}
+                  className="w-5 h-5 text-red-500 cursor-pointer" />
                 </div>
                 <div className="p-4">
                   <h3 className="font-semibold text-gray-900 mb-1">

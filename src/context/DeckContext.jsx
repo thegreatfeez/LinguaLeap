@@ -13,8 +13,12 @@ export const DeckProvider = ({children}) => {
         return savedDecks.find(deck => deck.id === id)
     }
 
+      const deleteDeck = (id) => {
+    setSavedDecks(prev => prev.filter(deck => deck.id !== id));
+  };
+
     return(
-        <DeckContext.Provider value={{savedDecks, addDeck, getDeck}}>
+        <DeckContext.Provider value={{savedDecks, addDeck, getDeck, deleteDeck}}>
             {children}
         </DeckContext.Provider>
     )
