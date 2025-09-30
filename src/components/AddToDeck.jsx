@@ -13,11 +13,7 @@ export default function CreateNewDeck() {
     })
    
     const [cards, setCards] = React.useState({front:'', back: ''})
-    const [cardsList, setCardsList] = React.useState([
-        { front: "Hola", back: "Hello" },
-        { front: "Adiós", back: "Goodbye" },
-        { front: "Gracias", back: "Thank you" }
-    ])
+    const [cardsList, setCardsList] = React.useState([])
 
     const [showSuccess, setShowSuccess] = useState(false);
     const [showError, setShowError] = useState(false);
@@ -38,8 +34,6 @@ export default function CreateNewDeck() {
   }
     addDeck(completeDeck);
     setShowSuccess(true);
-    console.log("Deck created:", completeDeck);
-
     setDeckDetails({ deckName: "", deckDescription: "" });
   }
 

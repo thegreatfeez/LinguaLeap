@@ -7,6 +7,7 @@ import Home from "./Pages/Home"
 import Login from "./Pages/Login"
 import CreateNewDeck from "./components/AddToDeck"
 import { DeckProvider } from "./context/DeckContext"
+import DeckDetails from "./Pages/DeckDetails"
 
 
 export default function App() {
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="decks" element={<Decks />} />
           <Route path="stats" element={<Stats />} />
            <Route path="createDeck" element={<CreateNewDeck />} />
+           <Route path="deckDetails/:id" element={<DeckDetails />} />
         </Route>
          <Route path="login" element={<Login/>}/>
       </Routes>

@@ -52,8 +52,8 @@ export default function Decks() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {savedDecks.map((deck) => (
+              <Link key={deck.id} to={`/deckDetails/${deck.id}`}>
               <div
-                key={deck.id}
                 className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow relative group"
               >
                 <div
@@ -67,7 +67,10 @@ export default function Decks() {
                 ></div>
                 <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <FaTrash 
-                  onClick={() => deleteDeck(deck.id)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    deleteDeck(deck.id);
+                  }}
                   className="w-5 h-5 text-red-500 cursor-pointer" />
                 </div>
                 <div className="p-4">
@@ -79,6 +82,7 @@ export default function Decks() {
                   </p>
                 </div>
               </div>
+              </Link>
             ))}
 
             <Link to="/createDeck">
@@ -111,7 +115,7 @@ export default function Decks() {
             </Link>
 
             <button className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-4 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2">
-              <span className="text-xl">🔍</span>
+              <span className="text-xl">🔎</span>
               <span>Browse Decks</span>
             </button>
           </div>

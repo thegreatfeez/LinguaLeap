@@ -17,8 +17,15 @@ export const DeckProvider = ({children}) => {
     setSavedDecks(prev => prev.filter(deck => deck.id !== id));
   };
 
+ const updateDeck = (id, updatedDeck) => {
+  setSavedDecks(prev => 
+    prev.map(deck => deck.id === id ? updatedDeck : deck)
+  );
+};
+
+
     return(
-        <DeckContext.Provider value={{savedDecks, addDeck, getDeck, deleteDeck}}>
+        <DeckContext.Provider value={{savedDecks, addDeck, getDeck, deleteDeck,updateDeck}}>
             {children}
         </DeckContext.Provider>
     )
