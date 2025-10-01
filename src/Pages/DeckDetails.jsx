@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Search, List, Grid, Edit2, Trash2, FileX} from "lucide-react";
 import { useDeck } from "../context/DeckContext";
 import { useParams } from "react-router";
-
+import { Link } from "react-router-dom";
 
 export default function DeckDetails() {
   const [activeTab, setActiveTab] = useState("all");
@@ -45,7 +45,6 @@ if(!deck){
     const updatedCards = [...flashcards, { id: Date.now(), ...newCard, studied: false }];
     setFlashcards(updatedCards);
     
-    
     updateDeck(deck.id, { ...deck, cards: updatedCards });
     
     setNewCard({ front: "", back: "" });
@@ -71,7 +70,6 @@ function handleSaveEdit(cardId) {
   );
   setFlashcards(updatedCards);
   
- 
   updateDeck(deck.id, { ...deck, cards: updatedCards });
   
   setEditingCard(null);
@@ -91,11 +89,13 @@ function handleCancelEdit() {
       return true;
     })
     .filter(card => {
+      if (activeTab === "studied") return true;
       if (!searchQuery.trim()) return true;
       const query = searchQuery.toLowerCase();
       return card.front.toLowerCase().includes(query) || card.back.toLowerCase().includes(query);
     })
     .sort((a, b) => {
+      if (activeTab === "studied") return 0;
       if (sortBy === "front-az") {
         return a.front.localeCompare(b.front);
       } else if (sortBy === "front-za") {
@@ -167,18 +167,20 @@ function handleCancelEdit() {
           </div>
         )}
 
-        <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search flashcards..."
-              className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+        {activeTab === "all" && (
+          <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search flashcards..."
+                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="border-b border-gray-200 mb-6">
           <div className="flex items-center justify-between">
@@ -205,58 +207,82 @@ function handleCancelEdit() {
               </button>
             </div>
 
-            <div className="relative mb-2">
-              <button 
-                onClick={() => {
-                  const select = document.getElementById('sort-select');
-                  select.focus();
-                  select.click();
-                }}
-                className="text-gray-600 hover:text-gray-900 font-medium flex items-center space-x-2 cursor-pointer"
+            {activeTab === "all" && (
+              <div className="relative mb-2">
+                <button 
+                  onClick={() => {
+                    const select = document.getElementById('sort-select');
+                    select.focus();
+                    select.click();
+                  }}
+                  className="text-gray-600 hover:text-gray-900 font-medium flex items-center space-x-2 cursor-pointer"
+                >
+                  <span>Sort by</span>
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
+                  </svg>
+                </button>
+                <select
+                  id="sort-select"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="absolute right-0 top-0 opacity-0 w-full h-full cursor-pointer"
+                >
+                  <option value="default">Default</option>
+                  <option value="front-az">Front (A-Z)</option>
+                  <option value="front-za">Front (Z-A)</option>
+                  <option value="back-az">Back (A-Z)</option>
+                  <option value="back-za">Back (Z-A)</option>
+                </select>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {activeTab === "all" && (
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex bg-gray-100 rounded-lg p-1">
+              <button
+                onClick={() => setViewMode("list")}
+                className={`p-2 rounded transition-colors ${
+                  viewMode === "list" ? "bg-white shadow-sm" : "hover:bg-gray-200"
+                }`}
               >
-                <span>Sort by</span>
-                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
-                </svg>
+                <List className="w-5 h-5 text-gray-700" />
               </button>
-              <select
-                id="sort-select"
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="absolute right-0 top-0 opacity-0 w-full h-full cursor-pointer"
+              <button
+                onClick={() => setViewMode("grid")}
+                className={`p-2 rounded transition-colors ${
+                  viewMode === "grid" ? "bg-white shadow-sm" : "hover:bg-gray-200"
+                }`}
               >
-                <option value="default">Default</option>
-                <option value="front-az">Front (A-Z)</option>
-                <option value="front-za">Front (Z-A)</option>
-                <option value="back-az">Back (A-Z)</option>
-                <option value="back-za">Back (Z-A)</option>
-              </select>
+                <Grid className="w-5 h-5 text-gray-700" />
+              </button>
             </div>
           </div>
-        </div>
+        )}
 
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex bg-gray-100 rounded-lg p-1">
-            <button
-              onClick={() => setViewMode("list")}
-              className={`p-2 rounded transition-colors ${
-                viewMode === "list" ? "bg-white shadow-sm" : "hover:bg-gray-200"
-              }`}
-            >
-              <List className="w-5 h-5 text-gray-700" />
-            </button>
-            <button
-              onClick={() => setViewMode("grid")}
-              className={`p-2 rounded transition-colors ${
-                viewMode === "grid" ? "bg-white shadow-sm" : "hover:bg-gray-200"
-              }`}
-            >
-              <Grid className="w-5 h-5 text-gray-700" />
-            </button>
+        {activeTab === "all" && flashcards.length > 0 && (
+          <div className="mb-6">
+            <Link to={`/study/${id}`}>
+              <button className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-4 rounded-lg transition-colors flex items-center justify-center space-x-3 shadow-md">
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+                <span className="text-lg">Start Study Session</span>
+              </button>
+            </Link>
           </div>
-        </div>
+        )}
 
-        <div className={viewMode === "grid" ? "grid grid-cols-2 gap-4" : "space-y-4"}>
+        <div className={activeTab === "all" && viewMode === "grid" ? "grid grid-cols-2 gap-4" : "space-y-4"}>
+          {activeTab === "studied" && filteredAndSortedCards.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">No studied cards yet.</p>
+              <p className="text-gray-400 text-sm mt-2">Cards you mark as known will appear here.</p>
+            </div>
+          )}
+          
           {filteredAndSortedCards.map((card) => (
             <div key={card.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               {editingCard === card.id ? (
@@ -297,8 +323,8 @@ function handleCancelEdit() {
                   </div>
                 </div>
               ) : (
-                <div className={viewMode === "grid" ? "flex flex-col space-y-4" : "flex items-center justify-between"}>
-                  <div className={viewMode === "grid" ? "space-y-4" : "flex-1 grid grid-cols-2 gap-8"}>
+                <div className={activeTab === "all" && viewMode === "grid" ? "flex flex-col space-y-4" : "flex items-center justify-between"}>
+                  <div className={activeTab === "all" && viewMode === "grid" ? "space-y-4" : "flex-1 grid grid-cols-2 gap-8"}>
                     <div>
                       <p className="text-sm text-gray-500 mb-1">Front</p>
                       <p className="text-lg font-semibold text-gray-900">{card.front}</p>
@@ -308,20 +334,22 @@ function handleCancelEdit() {
                       <p className="text-lg text-gray-700">{card.back}</p>
                     </div>
                   </div>
-                  <div className={`flex items-center space-x-2 ${viewMode === "grid" ? "" : "ml-6"}`}>
-                    <button
-                      onClick={() => handleStartEdit(card)}
-                      className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
-                    >
-                      <Edit2 className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteCard(card.id)}
-                      className="p-2 text-gray-400 hover:text-red-600 transition-colors"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  </div>
+                  {activeTab === "all" && (
+                    <div className={`flex items-center space-x-2 ${viewMode === "grid" ? "" : "ml-6"}`}>
+                      <button
+                        onClick={() => handleStartEdit(card)}
+                        className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
+                      >
+                        <Edit2 className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteCard(card.id)}
+                        className="p-2 text-gray-400 hover:text-red-600 transition-colors"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
