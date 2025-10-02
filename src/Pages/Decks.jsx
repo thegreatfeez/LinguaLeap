@@ -40,7 +40,7 @@ export default function Decks() {
       <div className="max-w-6xl mx-auto px-6">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome back, Sarah!
+            Welcome back!
           </h1>
           <p className="text-gray-600">Let's continue your language journey.</p>
         </div>
