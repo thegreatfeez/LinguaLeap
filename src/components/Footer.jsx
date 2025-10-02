@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
             <img 
-              src="/Vector.png" 
+              src="/vector.png" 
               alt="LinguaLeap-Logo" 
               className="w-6 h-6"
             />

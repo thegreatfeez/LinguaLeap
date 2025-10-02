@@ -20,7 +20,7 @@ export default function Header() {
      
         <Link to="/" className="flex items-center space-x-2">
           <img 
-            src="/Vector.png" 
+            src="/vector.png" 
             alt="LinguaLeap-Logo" 
             className="w-8 h-8"
           />
