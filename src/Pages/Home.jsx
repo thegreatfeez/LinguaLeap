@@ -8,7 +8,7 @@ export default function Homepage() {
         <div className="text-center">
           <div className="flex items-center justify-center space-x-3 mb-8">
             <img 
-              src="/Vector.png" 
+              src="/vector.png" 
               alt="LinguaLeap-Logo" 
               className="w-12 h-12"
             />

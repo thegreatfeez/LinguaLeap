@@ -21,7 +21,7 @@ export default function Login() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex items-center justify-center space-x-2 mb-8">
           <img 
-            src="/Vector.png" 
+            src="/vector.png" 
             alt="LinguaLeap-Logo" 
             className="w-8 h-8"
           />
